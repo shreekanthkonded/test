@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <!-- taken from https://facebook.github.io/react/docs/installation.html -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+        <script src="https://unpkg.com/react@15/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+        <!-- Visibility mixin https://github.com/Pomax/react-component-visibility -->
+        <script src="./node_modules/react-component-visibility/index.js"></script>        
+
+        <script type="text/babel">
+            var GoodDeal = React.createClass({    
+                render() {
+                    return <div className="col-md-12">
+                      <div className="item">
+                        <a href="" className="title"><h5>{this.props.appitem.Title}</h5></a>
+                        <span className="author">posted by {this.props.appitem.PostedBy}</span>
+                        <span className="timeago"> on {this.props.appitem.Date}</span>
+                      </div>
+                    </div>               
+                }
+            });
+
+            var GoodDeals = React.createClass({  
+                mixins : [
+            
+                    ComponentVisibilityMixin
+                ],
+                getInitialState() {
+                
+                    return {
+                        promodata: [{"Title":"Nec vero sum nescius esse utilit in historia, non modo voluptatem nec vero sum nescius esse utilit in historia, non moda voluptatem.","PostedBy":"Lim","Date":" 30-12-2016 3:18pm"},
+                                    {"Title":"Nec vero sum nescius esse utilit in historia, non modo voluptatem nec vero sum nescius esse utilit in historia, non moda voluptatem.","PostedBy":"Lim","Date":"30-12-2016 3:20pm"},
+                                    {"Title":"Nec vero sum nescius esse utilit in historia, non modo voluptatem nec vero sum nescius esse utilit in historia, non moda voluptatem.","PostedBy":"Lim","Date":"30-12-2016 3:23pm"}]
+                            }
+               },                            
+               retrieveFromWebService(){
+        var that = this;
+        var url="sampledata2.json"
+        fetch(url)
+        .then(function(response)
+        {
+                if(response.status>=400)
+                {
+                    throw new Error("no server");
+                }
+                return response.json();
+        })
+        .then(function(data)
+        { 
+            that.setState({promodata:data});
+        })
+
+    },
+
+      componentVisibilityChanged(){
+             this.retrieveFromWebService();
+             this.disableVisibilityHandling();
+      }, 
+
+
+
+
+renderPromotions()
+{
+    return this.state.promodata.map((promoitem) => (
+        <GoodDeal appitem={promoitem} />
+    ));  
+},
+    render(){
+        return <div className="col-md-12 col-sm-6 col-xs-6 latesttrendinggroupbox">
+         <div className="latesttrendinggroup latest">
+            <div className="col-md-12">
+               <h4 className="subheader">LATEST</h4>
+            </div>
+             {this.renderPromotions()}
+            </div>
+        </div>;
+    }
+
+});
+ReactDOM.render(
+    <GoodDeals/>,
+    document.getElementById('eforum')
+);
+        </script>
+    </head>
+    <body>
+       
+        <div id="eforum">
+        
+        </div>
+    </body>
+</html>
